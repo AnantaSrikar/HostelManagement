@@ -15,13 +15,14 @@
         tools:targetApi="31">
 
         <activity
-            android:name="com.microsoft.identity.client.BrowserTabActivity">
+            android:name="com.microsoft.identity.client.BrowserTabActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="msauth"
-                    android:host="com.test.hostelmanagemen"
+                    android:host="com.test.hostelmanagement"
                     android:path="/AtGrELOvCviamtG+Q5vJjCDzuV0=" />
             </intent-filter>
         </activity>
