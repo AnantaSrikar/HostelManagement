@@ -1,0 +1,15 @@
+{
+  "client_id" : "a45c9fe3-ff0b-42c3-9592-759a6c7439a8",
+  "authorization_user_agent" : "DEFAULT",
+  "redirect_uri" : "msauth://com.test.hostelmanagement/AtGrELOvCviamtG%2BQ5vJjCDzuV0%3D",
+  "account_mode" : "SINGLE",
+  "authorities" : [
+    {
+      "type": "AAD",
+      "audience": {
+        "type": "AzureADMultipleOrgs",
+        "tenant_id": "organizations"
+      }
+    }
+  ]
+}
