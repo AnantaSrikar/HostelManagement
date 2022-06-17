@@ -54,9 +54,6 @@ public class MainActivity extends AppCompatActivity {
     /* UI & Debugging Variables */
     Button signInButton;
     Button signOutButton;
-    Button callGraphApiInteractiveButton;
-    Button callGraphApiSilentButton;
-    TextView logTextView;
     TextView currentUserTextView;
     Toast toast;
 
@@ -67,28 +64,18 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void displayGraphResult(@NonNull final JsonObject graphResponse) {
-        logTextView.setText(graphResponse.toString());
-    }
-
-    private void displayError(@NonNull final Exception exception) {
-        logTextView.setText(exception.toString());
-    }
-
     private void updateUI(@Nullable final IAccount account) {
         if (account != null) {
             signInButton.setEnabled(false);
             signOutButton.setEnabled(true);
-            callGraphApiInteractiveButton.setEnabled(true);
-            callGraphApiSilentButton.setEnabled(true);
             currentUserTextView.setText(account.getUsername());
-        } else {
+        }
+
+        else
+        {
             signInButton.setEnabled(true);
             signOutButton.setEnabled(false);
-            callGraphApiInteractiveButton.setEnabled(false);
-            callGraphApiSilentButton.setEnabled(false);
             currentUserTextView.setText("");
-            logTextView.setText("");
         }
     }
 
@@ -115,12 +102,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void success(final Drive drive) {
                         Log.d(TAG, "Found Drive " + drive.id);
-                        displayGraphResult(drive.getRawObject());
                     }
 
                     @Override
                     public void failure(ClientException ex) {
-                        displayError(ex);
+                        Log.d(TAG, ex.toString());
                     }
                 });
     }
@@ -135,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(MsalException exception) {
                 Log.d(TAG, "Authentication failed: " + exception.toString());
-                displayError(exception);
             }
         };
     }
@@ -156,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
             public void onError(MsalException exception) {
                 /* Failed to acquireToken */
                 Log.d(TAG, "Authentication failed: " + exception.toString());
-                displayError(exception);
             }
             @Override
             public void onCancel() {
@@ -168,10 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeUI(){
         signInButton = findViewById(R.id.signIn);
-        callGraphApiSilentButton = findViewById(R.id.callGraphSilent);
-        callGraphApiInteractiveButton = findViewById(R.id.callGraphInteractive);
         signOutButton = findViewById(R.id.clearCache);
-        logTextView = findViewById(R.id.txt_log);
         currentUserTextView = findViewById(R.id.current_user);
 
         //Sign in user
@@ -200,31 +181,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onError(@NonNull MsalException exception){
-                        displayError(exception);
+                        Log.d(TAG, exception.toString());
                     }
                 });
-            }
-        });
-
-        //Interactive
-        callGraphApiInteractiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mSingleAccountApp == null) {
-                    return;
-                }
-                mSingleAccountApp.acquireToken(MainActivity.this, SCOPES, getAuthInteractiveCallback());
-            }
-        });
-
-        //Silent
-        callGraphApiSilentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mSingleAccountApp == null){
-                    return;
-                }
-                mSingleAccountApp.acquireTokenSilentAsync(SCOPES, AUTHORITY, getAuthSilentCallback());
             }
         });
     }
@@ -252,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(@NonNull MsalException exception) {
-                displayError(exception);
+                Log.d(TAG, exception.toString());
             }
         });
     }
@@ -273,9 +232,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onError(MsalException exception) {
-                        displayError(exception);
+                        Log.d(TAG, exception.toString());
                     }
                 });
+
+        // TODO: use account to communicate with our backend server
     }
 
     @Override
