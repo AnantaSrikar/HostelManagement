@@ -69,7 +69,11 @@ public class MainActivity extends AppCompatActivity {
         if (account != null) {
             signInButton.setEnabled(false);
             signOutButton.setEnabled(true);
-            currentUserTextView.setText(account.getUsername());
+            //currentUserTextView.setText(account.getUsername());
+            Intent studentActivityIntent = new Intent(getApplicationContext(), StudentActivity.class);
+            studentActivityIntent.putExtra("email", account.getUsername());
+            studentActivityIntent.putExtra("name", account.getClass());
+            startActivity(studentActivityIntent);
         }
 
         else
@@ -237,9 +241,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        // TODO: use account to communicate with our backend server]
-        Intent studentActivityIntent = new Intent(this, StudentActivity.class);
-        startActivity(studentActivityIntent);
+        // TODO: use account to communicate with our backend server
     }
 
     @Override
