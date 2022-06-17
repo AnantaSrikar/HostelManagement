@@ -8,6 +8,8 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <!-- TODO: Add MU logo and make it look better -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

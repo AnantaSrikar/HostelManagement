@@ -1,5 +1,6 @@
 package com.test.hostelmanagement;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -236,7 +237,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        // TODO: use account to communicate with our backend server
+        // TODO: use account to communicate with our backend server]
+        Intent studentActivityIntent = new Intent(this, StudentActivity.class);
+        startActivity(studentActivityIntent);
     }
 
     @Override
@@ -254,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
             return true;
         }
 
