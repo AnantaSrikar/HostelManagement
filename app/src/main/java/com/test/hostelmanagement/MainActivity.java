@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     /* UI & Debugging Variables */
     Button signInButton;
-    Button signOutButton;
-    TextView currentUserTextView;
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -65,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void performOperationOnSignOut() {
         final String signOutText = "Signed Out.";
-        currentUserTextView.setText("");
         Toast.makeText(getApplicationContext(), signOutText, Toast.LENGTH_SHORT)
                 .show();
     }
@@ -160,38 +157,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeUI(){
         signInButton = findViewById(R.id.signIn);
-        signOutButton = findViewById(R.id.clearCache);
-        currentUserTextView = findViewById(R.id.current_user);
 
         //Sign in user
         signInButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Button pressed", Toast.LENGTH_LONG).show();
+
                 if (mSingleAccountApp == null) {
                     return;
                 }
                 mSingleAccountApp.signIn(MainActivity.this, null, SCOPES, getAuthInteractiveCallback());
-            }
-        });
-
-        //Sign out user
-        signOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mSingleAccountApp == null){
-                    return;
-                }
-                mSingleAccountApp.signOut(new ISingleAccountPublicClientApplication.SignOutCallback() {
-                    @Override
-                    public void onSignOut() {
-                        updateUI(null, null);
-                        performOperationOnSignOut();
-                    }
-                    @Override
-                    public void onError(@NonNull MsalException exception){
-                        Log.d(TAG, exception.toString());
-                    }
-                });
             }
         });
     }
