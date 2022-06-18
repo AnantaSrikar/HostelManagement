@@ -1,12 +1,14 @@
 package com.test.hostelmanagement;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.preference.PreferenceManager;
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -56,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
     Button signInButton;
     Button signOutButton;
     TextView currentUserTextView;
-    Toast toast;
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
 
     private void performOperationOnSignOut() {
         final String signOutText = "Signed Out.";
@@ -65,14 +70,18 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void updateUI(@Nullable final IAccount account) {
+    private void updateUI(@Nullable final IAccount account, @Nullable String username) {
         if (account != null) {
             signInButton.setEnabled(false);
             signOutButton.setEnabled(true);
-            //currentUserTextView.setText(account.getUsername());
+
             Intent studentActivityIntent = new Intent(getApplicationContext(), StudentActivity.class);
+
             studentActivityIntent.putExtra("email", account.getUsername());
-            studentActivityIntent.putExtra("name", account.getClass());
+            if(username == null)
+                studentActivityIntent.putExtra("name", sharedPreferences.getString("username", "NULL"));
+            else
+                studentActivityIntent.putExtra("name", username);
             startActivity(studentActivityIntent);
         }
 
@@ -107,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void success(final Drive drive) {
                         Log.d(TAG, "Found Drive " + drive.id);
+                        Log.d(TAG, "More Info: " + drive.name + " " + drive.owner.user.displayName);
+                        editor.putString("username", drive.owner.user.displayName);
+                        editor.apply();
+                        updateUI(authenticationResult.getAccount(), drive.owner.user.displayName);
                     }
 
                     @Override
@@ -136,10 +149,10 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(IAuthenticationResult authenticationResult) {
                 /* Successfully got a token, use it to call a protected resource - MSGraph */
                 Log.d(TAG, "Successfully authenticated");
-                /* Update UI */
-                updateUI(authenticationResult.getAccount());
                 /* call graph */
                 callGraphAPI(authenticationResult);
+                /* Update UI */
+                //updateUI(authenticationResult.getAccount());
             }
 
             @Override
@@ -181,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 mSingleAccountApp.signOut(new ISingleAccountPublicClientApplication.SignOutCallback() {
                     @Override
                     public void onSignOut() {
-                        updateUI(null);
+                        updateUI(null, null);
                         performOperationOnSignOut();
                     }
                     @Override
@@ -203,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAccountLoaded(@Nullable IAccount activeAccount) {
                 // You can use the account data to update your UI or your app database.
-                updateUI(activeAccount);
+                updateUI(activeAccount, null);
             }
 
             @Override
@@ -226,6 +239,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sharedPreferences.edit();
+
         initializeUI();
 
         PublicClientApplication.createSingleAccountPublicClientApplication(getApplicationContext(),
@@ -240,8 +256,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, exception.toString());
                     }
                 });
-
-        // TODO: use account to communicate with our backend server
     }
 
     @Override

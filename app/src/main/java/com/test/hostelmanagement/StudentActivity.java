@@ -67,8 +67,6 @@ public class StudentActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // TODO: MSAL info setting
-
         header_nav_name.setText(extras.getString("name"));
         header_nav_email.setText(extras.getString("email"));
 
