@@ -1,4 +1,4 @@
-package com.test.hostelmanagement.ui.slideshow;
+package com.test.hostelmanagement.ui.gatepass;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.test.hostelmanagement.databinding.FragmentSlideshowBinding;
+import com.test.hostelmanagement.databinding.FragmentGatepassBinding;
 
-public class SlideshowFragment extends Fragment {
+public class GatepassFragment extends Fragment {
 
-    private FragmentSlideshowBinding binding;
+    private FragmentGatepassBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        SlideshowViewModel slideshowViewModel =
-                new ViewModelProvider(this).get(SlideshowViewModel.class);
+        com.test.hostelmanagement.ui.gatepass.GatepassViewModel gatepassViewModel =
+                new ViewModelProvider(this).get(GatepassViewModel.class);
 
-        binding = FragmentSlideshowBinding.inflate(inflater, container, false);
+        binding = FragmentGatepassBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textSlideshow;
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textGallery;
+        gatepassViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

@@ -1,4 +1,4 @@
-package com.test.hostelmanagement.ui.gallery;
+package com.test.hostelmanagement.ui.complaints;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.test.hostelmanagement.databinding.FragmentGalleryBinding;
+import com.test.hostelmanagement.databinding.FragmentComplaintsBinding;
 
-public class GalleryFragment extends Fragment {
+public class ComplaintsFragment extends Fragment {
 
-    private FragmentGalleryBinding binding;
+    private FragmentComplaintsBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        GalleryViewModel galleryViewModel =
-                new ViewModelProvider(this).get(GalleryViewModel.class);
+        ComplaintsViewModel slideshowViewModel =
+                new ViewModelProvider(this).get(ComplaintsViewModel.class);
 
-        binding = FragmentGalleryBinding.inflate(inflater, container, false);
+        binding = FragmentComplaintsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textGallery;
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textSlideshow;
+        slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
