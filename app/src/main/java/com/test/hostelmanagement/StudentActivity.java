@@ -20,10 +20,17 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.microsoft.identity.client.IAccount;
+import com.microsoft.identity.client.IPublicClientApplication;
+import com.microsoft.identity.client.ISingleAccountPublicClientApplication;
+import com.microsoft.identity.client.PublicClientApplication;
+import com.microsoft.identity.client.exception.MsalException;
 import com.test.hostelmanagement.databinding.ActivityStudentBinding;
 
 public class StudentActivity extends AppCompatActivity {
     private static final String TAG = StudentActivity.class.getSimpleName();
+
+    private ISingleAccountPublicClientApplication mSingleAccountApp;
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityStudentBinding binding;
@@ -31,6 +38,37 @@ public class StudentActivity extends AppCompatActivity {
     View headerView;
     TextView header_nav_name;
     TextView header_nav_email;
+
+    private void performOperationOnSignOut() {
+        final String signOutText = "Signed Out.";
+        Toast.makeText(getApplicationContext(), signOutText, Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    private void loadAccount() {
+        if (mSingleAccountApp == null) {
+            return;
+        }
+
+        mSingleAccountApp.getCurrentAccountAsync(new ISingleAccountPublicClientApplication.CurrentAccountCallback() {
+            @Override
+            public void onAccountLoaded(@Nullable IAccount activeAccount) {
+            }
+
+            @Override
+            public void onAccountChanged(@Nullable IAccount priorAccount, @Nullable IAccount currentAccount) {
+                if (currentAccount == null) {
+                    // Perform a cleanup task as the signed-in account changed.
+                    performOperationOnSignOut();
+                }
+            }
+
+            @Override
+            public void onError(@NonNull MsalException exception) {
+                Log.d(TAG, exception.toString());
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +108,21 @@ public class StudentActivity extends AppCompatActivity {
         header_nav_name.setText(extras.getString("name"));
         header_nav_email.setText(extras.getString("email"));
 
+        PublicClientApplication.createSingleAccountPublicClientApplication(getApplicationContext(),
+                R.raw.auth_config_single_account, new IPublicClientApplication.ISingleAccountApplicationCreatedListener() {
+                    @Override
+                    public void onCreated(ISingleAccountPublicClientApplication application) {
+                        mSingleAccountApp = application;
+                        loadAccount();
+                    }
+                    @Override
+                    public void onError(MsalException exception) {
+                        Log.d(TAG, exception.toString());
+                    }
+                });
+
+        loadAccount();
+
     }
 
     @Override
@@ -85,8 +138,24 @@ public class StudentActivity extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.action_logout:
-                // TODO: Log out here
-                Toast.makeText(this, "call logout here!", Toast.LENGTH_LONG).show();
+
+                if (mSingleAccountApp == null){
+                    Toast.makeText(getApplicationContext(), "Something went wrong, please try restarting the app!", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "DEBUG: mSingleAccountApp is null");
+                }
+                mSingleAccountApp.signOut(new ISingleAccountPublicClientApplication.SignOutCallback() {
+                    @Override
+                    public void onSignOut() {
+                        performOperationOnSignOut();
+                    }
+                    @Override
+                    public void onError(@NonNull MsalException exception){
+                        Log.d(TAG, exception.toString());
+                    }
+                });
+
+                Toast.makeText(this, "Logging out now!", Toast.LENGTH_LONG).show();
+                finish();
                 break;
 
             case R.id.action_reportbug:

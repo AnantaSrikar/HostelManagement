@@ -72,9 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI(@Nullable final IAccount account, @Nullable String username) {
         if (account != null) {
-            signInButton.setEnabled(false);
-            signOutButton.setEnabled(true);
-
             Intent studentActivityIntent = new Intent(getApplicationContext(), StudentActivity.class);
 
             studentActivityIntent.putExtra("email", account.getUsername());
@@ -83,13 +80,6 @@ public class MainActivity extends AppCompatActivity {
             else
                 studentActivityIntent.putExtra("name", username);
             startActivity(studentActivityIntent);
-        }
-
-        else
-        {
-            signInButton.setEnabled(true);
-            signOutButton.setEnabled(false);
-            currentUserTextView.setText("");
         }
     }
 
